@@ -54,7 +54,7 @@ gcloud iot registries create my-registry \
 
 Creates a registry in *projects/my-iot-project/locations/us-central1* called *my-registry*. Any telemetry events published will be forwarded to the default Cloud Pub/Sub topic *projects/my-iot-project-toucan/topics/device-telemetry*,  state messages will be forwarded to the Cloud Pub/Sub topic *projects/my-iot-project-toucan/topics/device-state*. And we have create two additional telemetry subfolders *logs* and *pulse* for organising the logs and keep alive messages of our device which will be described in more detail in Part 2. 
 
-Now we will create a device configuration which requires us to pass in the authetication method. I will be using RSA256 and you can create a key pair refering to this [guide](https://cloud.google.com/iot/docs/how-tos/credentials/keys#generating_an_rsa_key_with_a_self-signed_x509_certificate). 
+Now we will create a device configuration which requires us to pass in the authetication method. I will be using RSA256 and you can create a key pair refering to this [guide](https://cloud.google.com/iot/docs/how-tos/credentials/keys#generating_an_rsa_key). 
 
 ```console
 gcloud iot devices create my-device \
@@ -71,7 +71,7 @@ Creates a device my-device that will use RS256 authentication in registry *my-re
 
 I will be using PlatformIO for the device development part and I highly recommended ot for getting started with ESP-IDF development. Although I am one those who like to use minimum amount of layers necessary to build a product I failed to setup the ESP-IDF development tools chain after spending hours on it. In retrospect I am happy to move on with the PlatformIO, it solves the toolchain setup, updates are almost seemless (minor updates) and gives easy access to Arduino libraries that you could use in conjunction with the ESP-IDF framework. 
 
-Now use the code provided in the repo under *DeviceCode* folder orgit create your project and make sure the framework is set to *Espressif IoT Development Framework*. And add [petit-gcp](https://platformio.org/lib/show/11561/petit-gcp ) library to your project. Add google certificate (for your convenience I added a copy in the repo) and the RSA private key to your project. And use this sample code to connect to google cloud. 
+Now use the code provided in the repo under *DeviceCode* or create your project in PlatformIO. If you are creating a new project make sure the framework is set to *Espressif IoT Development Framework* and add [petit-gcp](https://platformio.org/lib/show/11561/petit-gcp ) library to your project. Add google server certificate (for your convenience I added a copy in the repo) and your RSA private key to your *platform.ini*.
 
 ```c
 #include "stdio.h"
@@ -180,3 +180,25 @@ void app_main()
     gcp_app_start(petit_app);
 }
 ```
+
+Once you upload the code and monitor your device if everything went well you should see this output;
+
+```console
+␛[0;32mI (5710) PETIT_APP: [jwt_callback]␛[0m
+␛[0;32mI (5990) GCP_APP: [gcp_app_task] started␛[0m
+␛[0;32mI (7060) PETIT_APP: [app_connected_callback]␛[0m
+␛[0;32mI (7060) GCP_CLIENT: [gcp_send_telemetry] topic:/devices/my-device/events/logs, msg:tesdt␛[0m
+␛[0;32mI (7070) GCP_CLIENT: [gcp_send_telemetry] topic:/devices/my-device/events/topic_love, msg:1␛[0m
+␛[0;31mE (7100) GCP_APP: Error: [gcp_app_config_callback] error parsing JSON starting around ''␛[0m
+␛[0;32mI (9080) PETIT_APP: [app_get_state_callback]␛[0m
+␛[0;32mI (9080) GCP_APP: [gcp_send_state] sending new state:
+{"device_state":{"firmware":"5a4fd07-dirty","state_period_ms":2000,"pulse_period_ms":300000,"reset_reason":1},"app_state":{"desire":"objet petit"}}␛[0m
+␛[0;32mI (11080) PETIT_APP: [app_get_state_callback]␛[0m
+␛[0;32mI (13080) PETIT_APP: [app_get_state_callback]␛[0m
+␛[0;32mI (15080) PETIT_APP: [app_get_state_callback]␛[0m
+␛[0;32mI (17080) PETIT_APP: [app_get_state_callback]␛[0m
+␛[0;32mI (19080) PETIT_APP: [app_get_state_callback]␛[0m
+␛[0;32mI (21080) PETIT_APP: [app_get_state_callback]␛[0m
+```
+
+Now the device is connected to google cloud platform next Part 2 we will connect the device and the mobile application. 

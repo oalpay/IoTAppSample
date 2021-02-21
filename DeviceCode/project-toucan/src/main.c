@@ -26,7 +26,6 @@ static void jwt_callback(const char *project_id, char *jtw_token_buffer)
 {
     ESP_LOGI(TAG, "[jwt_callback]");
     char *token = create_GCP_JWT(project_id, (const char *)gcp_jwt_private_pem_key_start, gcp_jwt_private_pem_key_end - gcp_jwt_private_pem_key_start);
-    ESP_LOGI(TAG, "%s", token);
     strncpy(jtw_token_buffer, token, JWT_TOKEN_BUFFER_SIZE); //BUFFER SIZE
     free(token);
 }
