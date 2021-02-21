@@ -200,5 +200,5 @@ Once you upload the code and monitor your device if everything went well you sho
 ␛[0;32mI (19080) PETIT_APP: [app_get_state_callback]␛[0m
 ␛[0;32mI (21080) PETIT_APP: [app_get_state_callback]␛[0m
 ```
-
+## Part 2 (Not written yet)
 Now the device is connected to google cloud platform next Part 2 we will connect the device and the mobile application. 
