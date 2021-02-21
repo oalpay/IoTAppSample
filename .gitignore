@@ -1,0 +1,5 @@
+.pio
+.vscode
+.DS_Store
+sdkconfig
+wifi_credentials.h
