@@ -42,7 +42,7 @@ gcloud pubsub topics create device-telemetry
 
 Then we need a [registery](https://cloud.google.com/iot/docs/concepts/devices#device_registration) which is going to host your device properties like authentication, logging etc.. 
 
-```console
+```sh
 gcloud iot registries create my-registry \
     --project=my-iot-project-toucan \
     --region=us-central1 \
@@ -52,7 +52,7 @@ gcloud iot registries create my-registry \
     --event-notification-config=topic=projects/my-iot-project-toucan/topics/device-telemetry 
 ```
 
-Creates a registry in *projects/my-iot-project/locations/us-central1* called *my-registry*. Any telemetry events published will be forwarded to the default Cloud Pub/Sub topic *projects/my-iot-project-toucan/topics/device-telemetry*,  state messages will be forwarded to the Cloud Pub/Sub topic *projects/my-iot-project-toucan/topics/device-state*. And we have create two additional telemetry subfolders *logs* and *pulse* for organising the logs and keep alive messages of our device. 
+Creates a registry in *projects/my-iot-project/locations/us-central1* called *my-registry*. Any telemetry events published will be forwarded to the default Cloud Pub/Sub topic *projects/my-iot-project-toucan/topics/device-telemetry*,  state messages will be forwarded to the Cloud Pub/Sub topic *projects/my-iot-project-toucan/topics/device-state*. And we have create two additional telemetry subfolders *logs* and *pulse* for organising the logs and keep alive messages of our device which will be described in more detail in Part 2. 
 
 Now we will create a device configuration which requires us to pass in the authetication method. I will be using RSA256 and you can create a key pair refering to this [guide](https://cloud.google.com/iot/docs/how-tos/credentials/keys#generating_an_rsa_key_with_a_self-signed_x509_certificate). 
 
@@ -71,7 +71,7 @@ Creates a device my-device that will use RS256 authentication in registry *my-re
 
 I will be using PlatformIO for the device development part and I highly recommended ot for getting started with ESP-IDF development. Although I am one those who like to use minimum amount of layers necessary to build a product I failed to setup the ESP-IDF development tools chain after spending hours on it. In retrospect I am happy to move on with the PlatformIO, it solves the toolchain setup, updates are almost seemless (minor updates) and gives easy access to Arduino libraries that you could use in conjunction with the ESP-IDF framework. 
 
-Now use the code provided in the repo under *DeviceCode* folder or create your project and make sure the framework is set to *Espressif IoT Development Framework*. And add [petit-gcp](https://platformio.org/lib/show/11561/petit-gcp ) library to your project. Add google certificate (for your convenience I added a copy in the repo) and the RSA private key to your project. And use this sample code to connect to google cloud. 
+Now use the code provided in the repo under *DeviceCode* folder orgit create your project and make sure the framework is set to *Espressif IoT Development Framework*. And add [petit-gcp](https://platformio.org/lib/show/11561/petit-gcp ) library to your project. Add google certificate (for your convenience I added a copy in the repo) and the RSA private key to your project. And use this sample code to connect to google cloud. 
 
 ```c
 #include "stdio.h"
@@ -180,9 +180,3 @@ void app_main()
     gcp_app_start(petit_app);
 }
 ```
-
-
-
-
-Events published to the without a subfolder, or with a subfolder that doesn't have a matching Pub/Sub topic will be forwarded to the Cloud Pub/Sub topic projects/my-iot-project/topics/device-telemetry. Messages published to logs and pulse subfolder will be forwarded to their corresponding Pub/Sub topics projects/my-iot-project-toucan/topics/device-log and projects/my-iot-project-toucan/topics/device-pulse. And finally state messages will be forwarded to topic projects/my-iot-project/topics/device-state.
-
